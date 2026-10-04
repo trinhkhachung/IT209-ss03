@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Internal App – Trang thông tin nội bộ</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #0a0f1e, #0d2137, #0a1628);
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    /* Animated background blobs */
+    body::before, body::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.3;
+      animation: drift 9s ease-in-out infinite alternate;
+      pointer-events: none;
+    }
+    body::before {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, #00b4d8, #0077b6);
+      top: -120px; right: -80px;
+    }
+    body::after {
+      width: 380px; height: 380px;
+      background: radial-gradient(circle, #48cae4, #023e8a);
+      bottom: -60px; left: -60px;
+      animation-delay: -4.5s;
+    }
+    @keyframes drift {
+      from { transform: translate(0, 0) scale(1); }
+      to   { transform: translate(30px, 40px) scale(1.1); }
+    }
+
+    .card {
+      position: relative;
+      z-index: 1;
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+      border: 1px solid rgba(0, 180, 216, 0.25);
+      border-radius: 24px;
+      padding: 56px 64px;
+      max-width: 640px;
+      width: 90%;
+      text-align: center;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.55),
+                  inset 0 1px 0 rgba(0,180,216,0.2);
+      animation: fadeUp 0.7s ease both;
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .badge {
+      display: inline-block;
+      background: linear-gradient(90deg, #00b4d8, #48cae4);
+      color: #0a0f1e;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      padding: 6px 18px;
+      border-radius: 100px;
+      margin-bottom: 28px;
+    }
+
+    .lock-icon {
+      font-size: 2.4rem;
+      margin-bottom: 12px;
+      display: block;
+      filter: drop-shadow(0 0 10px rgba(0,180,216,0.6));
+    }
+
+    h1 {
+      font-size: clamp(2rem, 5vw, 2.8rem);
+      font-weight: 800;
+      line-height: 1.15;
+      background: linear-gradient(90deg, #00b4d8 0%, #90e0ef 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+    }
+
+    .subtitle {
+      font-size: 1.05rem;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 36px;
+      line-height: 1.7;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 36px;
+    }
+    .info-item {
+      background: rgba(0, 180, 216, 0.07);
+      border: 1px solid rgba(0, 180, 216, 0.2);
+      border-radius: 14px;
+      padding: 16px;
+    }
+    .info-item .label {
+      font-size: 0.7rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 6px;
+    }
+    .info-item .value {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #90e0ef;
+    }
+
+    .access-warning {
+      background: rgba(0, 180, 216, 0.1);
+      border: 1px solid rgba(0, 180, 216, 0.25);
+      border-radius: 12px;
+      padding: 14px 20px;
+      font-size: 0.85rem;
+      color: rgba(255,255,255,0.65);
+      margin-bottom: 28px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-align: left;
+    }
+    .access-warning span.icon { font-size: 1.2rem; flex-shrink: 0; }
+
+    .status-dot {
+      display: inline-block;
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      background: #00b4d8;
+      margin-right: 8px;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(0,180,216,0.6); }
+      50%       { box-shadow: 0 0 0 8px rgba(0,180,216,0); }
+    }
+
+    .status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 0.9rem;
+      color: rgba(255,255,255,0.75);
+    }
+
+    .footer {
+      margin-top: 40px;
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.25);
+      letter-spacing: 0.06em;
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="badge">🔒 Internal Network Only</div>
+
+    <span class="lock-icon">🛡️</span>
+    <h1>Internal App</h1>
+
+    <p class="subtitle">
+      Trang thông tin nội bộ — chỉ dành cho nhân viên.<br />
+      Được phục vụ bởi <strong>Nginx Virtual Host</strong> trên cổng <strong>8090</strong>.
+    </p>
+
+    <div class="access-warning">
+      <span class="icon">⚠️</span>
+      <span>Đây là hệ thống nội bộ. Mọi truy cập trái phép đều bị ghi nhận và có thể bị xử lý theo quy định.</span>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-item">
+        <div class="label">Cổng dịch vụ</div>
+        <div class="value">8090</div>
+      </div>
+      <div class="info-item">
+        <div class="label">Môi trường</div>
+        <div class="value">Internal</div>
+      </div>
+      <div class="info-item">
+        <div class="label">Web Root</div>
+        <div class="value">/var/www/internal-app/html</div>
+      </div>
+      <div class="info-item">
+        <div class="label">Web Server</div>
+        <div class="value">Nginx</div>
+      </div>
+    </div>
+
+    <div class="status-bar">
+      <span class="status-dot"></span>
+      Server đang hoạt động bình thường
+    </div>
+
+    <div class="footer">IT209 · Session 03 · Exercise 04 · Nginx Virtual Hosts</div>
+  </div>
+</body>
+</html>
